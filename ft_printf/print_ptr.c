@@ -31,8 +31,3 @@ int	print_ptr(unsigned long long a)
 	print_hex(a, &res);
 	return (res);
 }
-/*#include <stdio.h>
-int main()
-{
-	printf("\n%d\n",print_ptr(745335));
-}*/

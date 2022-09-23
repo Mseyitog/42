@@ -55,11 +55,3 @@ int	ft_printf(const char *str, ...)
 	va_end(args);
 	return (ret);
 }
-/*
-#include <stdio.h>
-int	main()
-{
-	ft_printf("%%\n");
-	printf("%%\n");
-	return (0);
-}*/

@@ -31,9 +31,3 @@ int	print_hex_lower(unsigned int a)
 	print_hex(a, &res);
 	return (res);
 }
-/*#include <stdio.h>
-int main()
-{
-	printf("boyut: %d\n",print_hex_lower(53434657));
-}
-*/
