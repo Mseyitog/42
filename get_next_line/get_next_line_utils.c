@@ -6,54 +6,58 @@
 /*   By: mseyitog <mseyitog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 14:25:32 by mseyitog          #+#    #+#             */
-/*   Updated: 2022/10/03 17:53:41 by mseyitog         ###   ########.fr       */
+/*   Updated: 2022/10/09 17:24:46 by mseyitog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#ifndef NDEBUG
+#include <stdio.h>
+#endif
 
-char	*one_more(char *str, int *size)
+char	*ft_strnew(size_t size)
 {
-	char	*temp;
-	int		i;
+	char	*str;
+
+	str = (char *)malloc(sizeof(char) * size + 1);
+	if (!str)
+		return (NULL);
+	return (str);
+}
+
+size_t		ft_strlen(const char *s)
+{
+	size_t		i;
 
 	i = -1;
-	temp = (char *)malloc((*size + BUFFER_SIZE + 1) * sizeof(char));
-	while(str[++i])
-		temp[i] = str[i];
-	temp[*size + BUFFER_SIZE] = 0;
-	free(str);
-	return(temp);
+	while (*(s + ++i))
+		;
+	return (i);
 }
 
-char	*import(char *src, char *dest, int *size)
+char	*ft_strjoin(char *s1, char *s2)
 {
-	int	i;
-	int	j;
+	char	*new_str;
+	size_t	i;
+	size_t	j;
+	size_t	s1_len;
+	size_t	s2_len;
 
-	j = 0;
-	i = *size;
-	dest = one_more(dest, size);
-	*size += BUFFER_SIZE;
-	while (i < *size)
-		dest[i++] = src[j++];
-	return (dest);
-}
-
-int	is_nl(char	*str)
-{
-	int	i;
-
-	i = 0;
-	if (!str)
-		return(1);
-	while (i < BUFFER_SIZE)
-	{
-		if (str[i] == '\n')
-			return(0);
-		++i;
-	}
-	return (1);
+	if (!s1 || !s2)
+		return (NULL);
+	s1_len = ft_strlen(s1);
+	s2_len = ft_strlen(s2);
+	new_str = ft_strnew(s1_len + s2_len);
+	if (!new_str)
+		return (NULL);
+	i = -1;
+	j = -1;
+	while (++i < s1_len)
+		*(new_str + i) = *(s1 + i);
+	while (++j < s2_len)
+		*(new_str + i++) = *(s2 + j);
+	free(s1);
+	return (new_str);
 }
 
 int	red_lenght(char	*red, char	del)
@@ -63,14 +67,31 @@ int	red_lenght(char	*red, char	del)
 	i = 0;
 	while (red[i] != del)
 		++i;
+
 	return(i + 1);
 }
 
-void	clear_red(char **red, int len)
+char	*ft_strchr(const char *str, int c)
 {
-	int		nullen;
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == c % 256)
+			return (&((char *)str)[i]);
+		i++;
+	}
+	if (str[i] == c % 256 && c % 256 == '\0')
+		return (&((char *)str)[i]);
+	return (NULL);
+}
+
+char	*clear_red(char **red, int len)
+{
+	int			nullen;
 	char	*new;
-	int		i;
+	int			i;
 
 	i = 0;
 	nullen = red_lenght(*red, '\0');
@@ -80,41 +101,60 @@ void	clear_red(char **red, int len)
 		new[i] = (*red)[len + i];
 		++i;
 	}
+	new[i] = 0;
 	free(*red);
-	*red = new;
+	free(red);
+	return(new);
 }
 
 char	*get_line(char **red)
 {
-	char	*ret;
+	char	*line;
 	int		len;
 	int		i;
 
 	i = 0;
 	len = red_lenght(*red, '\n');
-	ret = (char *)malloc(sizeof(char) * len + 1);
+	line = (char *)malloc(sizeof(char) * len + 1);
 	while (i < len)
 	{
-		ret[i] = (*red)[i];
+		line[i] = (*red)[i];
 		i++;
 	}
-	ret[i] = 0;
-	clear_red(red, len);
-	return (ret);
+	line[i] = 0;
+	*red = clear_red(red, len);
+	return (line);
 }
 
 char	*get_char(int fd)
 {
 	char		*get;
 	static char *red;
-	int			readsize;
-	char		*ret;
+	int			sonuc;
 
-	readsize = 0;
-	get = (char *)malloc(BUFFER_SIZE * sizeof(char));
-	
-	while (is_nl(get) && read(fd, get, BUFFER_SIZE))
-		red = import(get, red, &readsize);
-	ret = get_line(&red);
-	return (ret);
+	#ifndef NDEBUG
+		printf("heyo");
+	#endif
+	sonuc = 1;
+	get = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!get)
+		return (0);
+	while (!ft_strchr(get, '\n') && sonuc)
+	{
+		sonuc = read(fd, get, BUFFER_SIZE);
+		if (sonuc == -1)
+		{
+			free(get);
+			return (NULL);
+		}
+		get[BUFFER_SIZE] = 0;
+		#ifndef NDEBUG
+			printf("%s", get);
+		#endif
+		red = ft_strjoin(red, get);
+	}
+	#ifndef NDEBUG
+			printf("bitti");
+	#endif
+	return (red);
 }
