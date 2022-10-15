@@ -6,24 +6,26 @@
 /*   By: mseyitog <mseyitog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 14:01:48 by mseyitog          #+#    #+#             */
-/*   Updated: 2022/10/03 17:57:27 by mseyitog         ###   ########.fr       */
+/*   Updated: 2022/10/15 14:06:22 by mseyitog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
-#define BUFFER_SIZE 1
-#include <fcntl.h>
+
+#ifndef BUFFER_SIZE
+# define BUFFER_SIZE 1
+#endif
+
 #include <stdlib.h>
 #include <unistd.h>
 
 char	*get_next_line(int fd);
-char	*one_more(char *str, int *size);
-char	*import(char *src, char *dest, int *size);
-int		is_nl(char	*str);
-int		red_lenght(char	*red, char	del);
-void	clear_red(char **red, int len);
-char	*get_line(char **red);
-char	*get_char(int fd);
+size_t  ft_strlen(const char *s);
+char    *ft_strjoin(char *s1, char *s2);
+char    *ft_strchr(const char *str, int c);
+char	*clear_save(char *save);
+char	*read_file(int fd, char *save);
+char	*get_line(char *save);
 
 #endif
