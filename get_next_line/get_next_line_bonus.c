@@ -1,35 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mseyitog <mseyitog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/03 14:01:20 by mseyitog          #+#    #+#             */
-/*   Updated: 2022/10/15 14:12:21 by mseyitog         ###   ########.fr       */
+/*   Created: 2022/10/15 13:55:01 by mseyitog          #+#    #+#             */
+/*   Updated: 2022/10/15 14:11:36 by mseyitog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*get_next_line(int fd)
 {
 	char		*ret;
-	static char	*save;
+	static char	*save[4096];
 	
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return(0);
-	save = read_file(fd, save);
-	if (!save)
+	save[fd] = read_file(fd, save[fd]);
+	if (!save[fd])
 		return (NULL);
-	ret = get_line(save);
-	if (!save[0])
+	ret = get_line(save[fd]);
+	if (!save[fd][0])
 	{
-		free(save);
-		save = NULL;
+		free(save[fd]);
+		save[fd] = NULL;
 		return (NULL);
 	}
-	save = clear_save(save);
+	save[fd] = clear_save(save[fd]);
 	return (ret);
 }
 
